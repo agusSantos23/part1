@@ -1,100 +1,52 @@
 import { useState } from 'react'
 
-const Button = ({text, activated}) => {
-  
-  return(
-    <button onClick={() => activated(text)}>{text}</button>
-  )
-}
-const Buttons = ({activated}) => {
-  return(
-    <>
-      <Button text = {"good"} activated = {activated}/>
-      <Button text = {"neutral"} activated = {activated}/>
-      <Button text = {"bad"} activated = {activated}/>
-    </>
-  )
-}
-
-const StaticLine = ({text,value}) =>{
-
-  return(
-    <tr>
-      <td>{text}</td>
-      <td>{value}</td>
-    </tr>
-  )
-
-}
-
-const Display = ({results}) => {
-  const [good, neutral, bad] = results
-
-  const all = good + neutral + bad
-
-  if(all == 0){
-    return(
-      <>
-        <h3>No feedback give</h3>
-      </>
-    )
-  }
-  const average = all / 3
-  const positive = (good * 100) / all
-
-  return(
-    <table>
-      <tbody>
-
-        <StaticLine text={"Good"} value={good} />
-        <StaticLine text={"Neutral"} value={neutral} />
-        <StaticLine text={"Bad"} value={bad} />
-
-        <StaticLine text={"All"} value={all} />
-        <StaticLine text={"Average"} value={average} />
-        <StaticLine text={"Positive"} value={positive} />
-
-      </tbody>
-
-
-    </table>
-  )
-}
-
 const App = () => {
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
+  const [selected, setSelected] = useState(0)
+  const [votes,setVotes] = useState(new Array(anecdotes.length).fill(0))
 
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+  const vote = () =>{
 
-  const activated = (action) =>{
-    switch (action){
-      case "good":
-        setGood(good +1)
-        break
-
-      case "neutral":
-        setNeutral(neutral +1)
-        break
-
-      case "bad":
-        setBad(bad +1)
-        break
-
-    }
+    const newVotes = [...votes];
+    newVotes[selected] += 1;
+    setVotes(newVotes);
   }
+
+  const next = () => {
+    
+    setSelected(Math.floor(Math.random() * 8))
+  }
+
+  const mostVoteIndex = votes.indexOf(Math.max(...votes))
+  const mostVote = Math.max(...votes)
+
+
   return (
     <>
-      <h2>Give feedback</h2>
+      <h1>Anecdote of the day</h1>
+      <h2>{anecdotes[selected]}</h2>
+      <h3>{votes[selected]}</h3>
+      <button onClick={vote}>
+        vote
+      </button>
+      <button onClick={next}>
+        next anecdote
+      </button>
 
-      <Buttons activated={activated}/>
-
-      <h2>Statistics</h2>
-
-      <Display results = {[good, neutral, bad]}/>
+      <h2>Anecdote with most votes</h2>
+      <h3>{anecdotes[mostVoteIndex]}</h3>
+      <h4>has {mostVote}</h4>
     </>
   )
 }
-
 
 export default App
